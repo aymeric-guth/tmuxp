@@ -144,6 +144,19 @@ class TmuxpPlugin:
 
         return True
 
+    def after_config_loaded(self, config):
+        """
+        Provide a config hook previous to creating the session.
+
+        This runs after the config has been loaded but before any of
+        environment variable has been expanded.
+
+        Parameters
+        ----------
+        config : :class:`tmuxp.config_reader.RawConfigData`
+            raw_config to hook into
+        """
+
     def before_workspace_builder(self, session):
         """
         Provide a session hook previous to creating the workspace.

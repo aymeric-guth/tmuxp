@@ -366,15 +366,17 @@ def load_workspace(
 
     # ConfigReader allows us to open a yaml or json file as a dict
     raw_workspace = config_reader.ConfigReader._from_file(workspace_file) or {}
+    ### hook
+    plugins = load_plugins(raw_workspace)
+    for plugin in plugins:
+        if getattr(plugin, "after_config_loaded", None):
+            raw_workspace = plugin.after_config_loaded(raw_workspace)
 
     # shapes workspaces relative to config / profile file location
     expanded_workspace = loader.expand(
         raw_workspace, cwd=os.path.dirname(workspace_file)
     )
-
-    # Overridden session name
-    if new_session_name:
-        expanded_workspace["session_name"] = new_session_name
+    ### hook
 
     # propagate workspace inheritance (e.g. session -> window, window -> pane)
     expanded_workspace = loader.trickle(expanded_workspace)
